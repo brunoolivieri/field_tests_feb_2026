@@ -1,7 +1,7 @@
 # 🧪 Field Tests - February 2026
 
 ![Status](https://img.shields.io/badge/Status-Active-success)
-![Version](https://img.shields.io/badge/Version-1.0.0-blue)
+![Version](https://img.shields.io/badge/Version-0.0.1-blue)
 ![Field Test](https://img.shields.io/badge/Type-Field_Test-orange)
 
 Welcome to the **Field Tests - February 2026** repository. This centralized hub is dedicated to storing, versioning, and analyzing all results and tools used during the field testing campaigns conducted in February 2026. The repository ensures data consistency and provides a snapshot of the exact software versions used during the tests.
