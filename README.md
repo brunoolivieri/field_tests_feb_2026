@@ -21,6 +21,7 @@ The repository is organized into distinct components for hardware communication,
 | **`/groundStation_logs`** | 🖥️ **Station Logs** | Operational logs, command history, and system status from the Ground Control Station. |
 | **`/groundStation_software`** | 💻 **Control Software** | The main application suite for the Ground Station, including UI and telemetry processing. |
 | **`/network`** | 📡 **Connectivity** | Network configurations, setup scripts, and definitions for the field communication mesh. |
+| **`/rpi_confs`** | ⚙️ **RPi Configs** | Configuration files for the Raspberry Pi environment and services. |
 | **`/rpi_esp32_collector`** | 🍓 **Data Collection** | Scripts running on the Raspberry Pi to collect and aggregate data from ESP32 nodes. |
 
 ---
