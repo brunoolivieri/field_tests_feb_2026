@@ -1,0 +1,6 @@
+[submodule "drone_api"]
+	path = drone_api
+	url = git@github.com:Project-GrADyS/uav_api.git
+[submodule "groundStation_software"]
+	path = groundStation_software
+	url = git@github.com:Project-GrADyS/gradys-gs-ng.git
