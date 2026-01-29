@@ -16,6 +16,7 @@ The repository is organized into distinct components for hardware communication,
 | :--- | :--- | :--- |
 | **`/drone_api`** | 🚁 **Drone Control** | API interfaces and libraries for communicating with and controlling the drones. |
 | **`/drones_logs`** | 📊 **Drone Data** | Flight logs, sensor telemetry, and debug data recorded directly from the drones. |
+| **`/drones_scripts`** | 🕹 **Drone Scripts** | Python scripts that executes mission by making HTTP requests to the drone API. |
 | **`/esp32_code`** | 📟 **Firmware** | Source code and firmware binaries for the ESP32 microcontrollers used in the field. |
 | **`/esp32_logs`** | 📝 **Sensor Logs** | Data logs captured from ESP32 sensors and devices during operation. |
 | **`/groundStation_logs`** | 🖥️ **Station Logs** | Operational logs, command history, and system status from the Ground Control Station. |
