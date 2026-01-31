@@ -1,11 +1,10 @@
 import csv
 
-class PositionTracker:
+class Tracker:
     def __init__(self):
         self.data = []
 
-    def track_position(self, time, position):
-        """Add a new row to the dataframe with the given time and position."""
+    def track(self, time, position):
         self.data.append({'simulation_time': time, 'position': position})
     
     def save_to_csv(self, filename):
