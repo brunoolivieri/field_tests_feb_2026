@@ -1,8 +1,8 @@
 import requests
 import time
 
-from helpers.tracker import PositionTracker, Tracker
-from helpers.diagnostics import get_diagnostics
+from tracker.position_tracker import PositionTracker
+from utils.diagnostics import get_diagnostics
 
 def run_mission_tracker(base_url: str, loop_frequency: float, mission_setup: callable, mission_step: callable):
     # Arming
@@ -21,8 +21,8 @@ def run_mission_tracker(base_url: str, loop_frequency: float, mission_setup: cal
         print("Failed to takeoff.")
         exit(1)
 
-    # Setting up Tracker
-    tracker = Tracker()
+    # Setting up Position Tracker
+    position_tracker = PositionTracker()
 
     # Diagnostics
     print("")
@@ -45,7 +45,6 @@ def run_mission_tracker(base_url: str, loop_frequency: float, mission_setup: cal
         simulation_time += 1/loop_frequency
         last_tick = time.time()
         
-        # Tracking telemetry infos
         position_response = requests.get(f"{base_url}/telemetry/ned")
         if position_response.status_code != 200:
             print("Failed to get position.")
@@ -53,13 +52,14 @@ def run_mission_tracker(base_url: str, loop_frequency: float, mission_setup: cal
         position_data = position_response.json()["info"]["position"]
         current_position = (position_data['x'], position_data['y'], -position_data['z'])
         
+        # Track position
         print("Tracking position at {:.2f}s: {}".format(simulation_time, current_position))
-        tracker.track(simulation_time, current_position)
+        position_tracker.track_position(simulation_time, current_position)
         
         # Mission logic
         if not mission_step(current_position):
             print("Mission step indicated to stop the mission.")
-            tracker.save_to_csv("mission_position_log.csv")
+            position_tracker.save_to_csv("mission_position_log.csv")
             break
 
     # Mission complete, landing
