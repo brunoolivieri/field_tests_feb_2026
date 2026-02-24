@@ -1,6 +1,4 @@
 #!/bin/bash
-set -e
-
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SERVICE_FILE="$SCRIPT_DIR/uav-api.service"
 
