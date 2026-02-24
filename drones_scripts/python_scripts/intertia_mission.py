@@ -13,8 +13,8 @@ from utils.get_drone_id import get_drone_id
 # The drone will considered that it arrived at the waypoint when
 # the distance to the waypoint is less than ACCURACY meters.
 
-N_WAYPOINT = 2
-WAYPOINT_DIST = 4
+N_WAYPOINT = 10
+WAYPOINT_DIST = 20
 ACCURACY = 1.0
 BASE_URL = f"http://localhost:{8000 + get_drone_id()}"
 LOOP_FREQUENCY = 2.0  # Hz
@@ -47,7 +47,7 @@ def straight_mission_step(current_position):
 
 
     if not is_going:
-        waypoint_y = current_waypoint * WAYPOINT_DIST
+        waypoint_y = (1 if current_waypoint%2==1 else -1) * WAYPOINT_DIST
         waypoint_x = 0
         waypoint_z = 0  # Maintain constant altitude of 10 meters
 
