@@ -1,7 +1,8 @@
 #!/bin/bash
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SERVICE_FILE="$SCRIPT_DIR/uav-api.service"
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+echo "$(pwd)"
+SERVICE_FILE="$SCRIPT_DIR/../uav-api.service"
 if [ "$EUID" -ne 0 ]; then
     echo "Please run with sudo: sudo bash $0"
     exit 1
@@ -13,7 +14,7 @@ if [ ! -f "$SERVICE_FILE" ]; then
 fi
 
 echo "Generating UAV config file using generate_uav_config.py ..."
-sudo python3 "$SCRIPT_DIR/python_scripts/utils/generate_uav_config.py"
+sudo python3 "$SCRIPT_DIR/../python_scripts/utils/generate_uav_config.py"
 
 echo "Copying uav-api.service to /etc/systemd/system/ ..."
 cp "$SERVICE_FILE" /etc/systemd/system/uav-api.service
