@@ -14,6 +14,7 @@ def main():
         "connection_type": "udpin",
         "sysid": sysid,
         "gradys_gs": "127.0.0.1:8000",
+        "scripts_path": "/home/pi/field_tests_feb_2026/drones_scripts/python_scripts"
     }
 
     output_path = Path("/etc/uavs/default.ini")
