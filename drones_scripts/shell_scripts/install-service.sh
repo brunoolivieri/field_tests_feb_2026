@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-echo "$(pwd)"
+
 SERVICE_FILE="$SCRIPT_DIR/../uav-api.service"
 if [ "$EUID" -ne 0 ]; then
     echo "Please run with sudo: sudo bash $0"
