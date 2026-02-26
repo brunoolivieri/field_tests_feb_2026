@@ -21,10 +21,10 @@ sysctl -w net.ipv4.ip_forward=1 > /dev/null
 # 2. Configurar eth0
 echo "Configurando eth0 (192.168.1.1)..."
 
-# Tenta desconectar a interface do NetworkManager na sessão atual para evitar conflitos
+# Evita que o NetworkManager interfira na eth0
 if command -v nmcli >/dev/null 2>&1; then
-    echo "Desconectando eth0 do NetworkManager temporariamente..."
-    nmcli device disconnect eth0 || true
+    echo "Definindo eth0 como não-gerenciada no NetworkManager..."
+    nmcli device set eth0 managed no || true
 fi
 
 # Configuração manual da interface
@@ -46,6 +46,7 @@ fi
 
 # Inicia dnsmasq como daemon (processo em background), sem criar serviço systemd
 # Configurações passadas via linha de comando
+# Adicionando arquivo de lease e logs para diagnostico e evitar erros de permissão
 dnsmasq \
     --conf-file=/dev/null \
     --interface=eth0 \
@@ -56,7 +57,21 @@ dnsmasq \
     --dhcp-option=3,192.168.1.1 \
     --dhcp-option=6,8.8.8.8,1.1.1.1 \
     --server=8.8.8.8 \
-    --server=1.1.1.1
+    --server=1.1.1.1 \
+    --dhcp-leasefile=/var/dnsmasq-ephemeral.leases \
+    --log-facility=/var/dnsmasq-ephemeral.log \
+    --log-dhcp
+
+chmod 777 /var/dnsmasq-ephemeral.leases
+chmod 777 /var/dnsmasq-ephemeral.log
+
+
+# Verifica se o dnsmasq subiu
+if pgrep -x "dnsmasq" > /dev/null; then
+    echo "dnsmasq iniciado com sucesso (PID: $(pgrep -x dnsmasq | head -n1))."
+else
+    echo "ALERTA: O processo dnsmasq não parece estar rodando. Verifique /tmp/dnsmasq-ephemeral.log."
+fi
 
 # 4. DNS Local
 # O script original alterava /etc/systemd/resolved.conf.
