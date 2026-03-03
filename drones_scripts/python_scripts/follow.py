@@ -16,6 +16,7 @@ OFFSET_ALT   = 2.0
 ALTITUDE_VOO = 2  # Altura de cruzeiro
 
 ALTITUDE_ABS = 0  # Variável global
+ALTITUDE_ABS_LEADER = 0  # Variável global
 
 
 def setup():
@@ -25,7 +26,7 @@ def setup():
     """
     print("--- INICIANDO SETUP ---")
 
-    global ALTITUDE_ABS
+    global ALTITUDE_ABS, ALTITUDE_ABS_LEADER
 
     # 1. Captura altitute absoluta
     print("Capturando altitude absoluta...")
@@ -33,10 +34,19 @@ def setup():
 
     if pos_result.status_code == 200:
         data = pos_result.json()
-        l_pos = data['info']['position']
-        ALTITUDE_ABS = float(l_pos['alt'])
+        f_pos = data['info']['position']
+        ALTITUDE_ABS = float(f_pos['alt'])
 
-    print(f"Altitude absoluta capturada: {ALTITUDE_ABS}m")
+    print(f"Altitude do follower absoluta capturada: {ALTITUDE_ABS}")
+
+    pos_result = requests.get(f"{LEADER_URL}/telemetry/home_info")
+
+    if pos_result.status_code == 200:
+        data = pos_result.json()
+        l_pos = data
+        ALTITUDE_ABS_LEADER = float(l_pos["altitude"])
+
+    print(f"Altitude do leader absoluta capturada: {ALTITUDE_ABS_LEADER}")
 
     # 2. Armar
     print("Armando o veículo...")
@@ -84,7 +94,7 @@ def loop():
             target_lat = leader_lat + delta_lat
             target_lon = leader_lon + delta_lon
 
-            raw_target_alt = (leader_alt - ALTITUDE_ABS) + OFFSET_ALT
+            raw_target_alt = (leader_alt - ALTITUDE_ABS_LEADER) + OFFSET_ALT
             target_alt = max(2.0, raw_target_alt)
 
             # 3. ENVIAR COMANDO DE MOVIMENTO (Go To)
