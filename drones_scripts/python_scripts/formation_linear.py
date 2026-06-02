@@ -2,15 +2,31 @@ import requests
 import time
 import math
 import sys
+from pathlib import Path
+#from utils.get_drone_id import get_drone_id
 
-from utils.get_drone_id import get_drone_id
+def get_drone_id():
+    script_dir = str(Path(__file__).parent.resolve()).split("_")[-1]
+    print(script_dir)
+    return int(script_dir)
+
+def offset_id(drone_id):
+    drone_relation = {
+        10: 1,
+        11: 2,
+        12: 3,
+        13: 4,
+        14: 5
+    }
+
+    return drone_relation[drone_id]
 
 # --- CONSTANTS ---
 DRONE_ID = get_drone_id()                                 # This drone's ID (edit per drone instance)
 SPACING = 5                                 # Spacing between consecutive drones (meters)
 ALTITUDE_VOO = 5                                # Cruise/takeoff altitude (meters)
 OFFSET_ALT = 2                                  # Altitude offset from master (meters)
-MASTER_URL = "http://localhost:8006"             # Master drone API URL
+MASTER_URL = "http://localhost:8014"             # Master drone API URL
 DRONE_URL = f"http://localhost:{8000 + DRONE_ID}"
 
 ALTITUDE_ABS = 0
@@ -23,8 +39,8 @@ def compute_offset(heading_deg):
     Distribution: drone 1 = +1*MASTER_DIST (right), drone 2 = -1*MASTER_DIST (left),
                   drone 3 = +2*MASTER_DIST (right), drone 4 = -2*MASTER_DIST (left), ...
     """
-    multiplier = math.ceil(DRONE_ID / 2)
-    sign = 1 if DRONE_ID % 2 == 1 else -1
+    multiplier = math.ceil(offset_id(DRONE_ID) / 2)
+    sign = 1 if offset_id(DRONE_ID) % 2 == 1 else -1
     perpendicular_offset = sign * multiplier * SPACING
 
     # Perpendicular to heading (heading + 90 degrees)
