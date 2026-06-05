@@ -1,13 +1,30 @@
+from pathlib import Path
+
 import requests
 import time
 import math
 import sys
 import argparse
 
-from utils.get_drone_id import get_drone_id
+def get_drone_id():
+    script_dir = str(Path(__file__).parent.resolve()).split("_")[-1]
+    print(script_dir)
+    return int(script_dir)
+
+def offset_id(drone_id):
+    drone_relation = {
+        10: 1,
+        11: 2,
+        12: 3,
+        13: 4,
+        14: 5
+    }
+
+    return drone_relation[drone_id]
+
 # --- GLOBALS ---
 DRONE_ID = get_drone_id()
-N = 0
+N = 4
 RADIUS = 10
 ORIENTATION = "horizontal"
 VERTICAL_AXIS = "north"
@@ -15,11 +32,11 @@ ALTITUDE_ABS = 0
 ALTITUDE_VOO = 5
 OFFSET_ALT = 2
 DRONE_URL = f"http://localhost:{8000 + DRONE_ID}"
-MASTER_URL = ""
+MASTER_URL = "http://localhost:8014"
 
-def compute_offset():
+def compute_offset(heading_deg):
     """Compute the formation offset (north, east, alt) in meters for this drone's vertex."""
-    theta = 2 * math.pi * (DRONE_ID - 1) / N
+    theta = (2 * math.pi * (offset_id(DRONE_ID) - 1) / N) + math.radians(heading_deg) + math.pi/4
 
     if ORIENTATION == "horizontal":
         offset_north = RADIUS * math.cos(theta)
@@ -84,8 +101,15 @@ def loop():
         master_lon = float(master_pos['lon'])
         master_alt = float(master_pos['alt'])
 
+        general_result = requests.get(f"{MASTER_URL}/telemetry/general")
+        if general_result.status_code != 200:
+            print(f"ERROR: Could not read master heading. Code: {general_result.status_code}")
+            return
+
+        heading_deg = float(general_result.json()['info']['heading'])
+
         # 2. Compute formation offset
-        offset_north, offset_east, offset_alt = compute_offset()
+        offset_north, offset_east, offset_alt = compute_offset(heading_deg)
 
         # 3. Convert meter offsets to GPS deltas
         delta_lat = offset_north / 111111.0
